@@ -59,6 +59,7 @@ func Init(cfg *config.Config, url string) {
 	go func() {
 		for {
 			<-ticker.C
+			a.Leagues = data.GetLeagues(url)
 			a.Leagues = data.GetStandings(url, a.Leagues)
 			a.Leagues = data.GetMatches(url, a.Leagues)
 

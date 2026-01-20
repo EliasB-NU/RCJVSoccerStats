@@ -27,6 +27,7 @@ func (a *API) getStandings(c *fiber.Ctx) error {
 	msg.League = a.Leagues.Leagues[leagueID].LeagueName
 	msg.LeagueAbbrev = a.Leagues.Leagues[leagueID].LeagueAbbreviation
 	msg.LastPublished = a.Leagues.Leagues[leagueID].LatestStandings.LastPublished
+	msg.StageName = a.Leagues.Leagues[leagueID].LatestStandings.LeagueStageName
 	msg.Standings = a.Leagues.Leagues[leagueID].LatestStandings.Standings
 
 	return c.Status(fiber.StatusOK).JSON(msg)
