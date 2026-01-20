@@ -8,6 +8,3 @@ type StandingsMessage struct {
 	LastPublished string           `json:"last_published"`
 	Standings     []data.Standings `json:"standings"`
 }
-
-type MatchesMessage struct {
-}

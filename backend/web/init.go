@@ -81,13 +81,16 @@ func Init(cfg *config.Config, url string) {
 		for {
 			<-tickerReferees.C
 			a.Referees = data.GetReferees(url)
-			log.Println("Updated referees")
+
+			// log.Println("Updated referees data")
+			// log.Println(a.Referees)
 		}
 	}()
 
 	// API Endpoints
 	apiV1 := fiber.New()
 	rcjvSoccerStats.Mount("/api/v1", apiV1)
+	apiV1.Get("/leagues", a.getLeagues)
 	apiV1.Get("/standings/:league", a.getStandings)
 	apiV1.Get("/matches/:league", a.getMatches)
 	apiV1.Get("/referees", a.getReferees)

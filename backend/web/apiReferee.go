@@ -31,5 +31,5 @@ func (a *API) getRefereeMatches(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.Status(fiber.StatusOK).JSON(referee.Matches)
+	return c.Status(fiber.StatusOK).JSON(referee)
 }
