@@ -85,3 +85,15 @@ type Team struct {
 	StartNumber *int    `json:"startnumber"`
 	ExternalKey *string `json:"external_key"`
 }
+
+type RefereeConverted struct {
+	Name    string `json:"name"`
+	Matches []struct {
+		Field         string `json:"field"`
+		Team1         string `json:"team1"`
+		Team2         string `json:"team2"`
+		League        string `json:"league"`
+		Start         string `json:"start"`
+		SecondReferee string `json:"referees"`
+	} `json:"matches"`
+}

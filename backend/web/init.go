@@ -14,7 +14,8 @@ import (
 )
 
 type API struct {
-	Leagues *data.League
+	Leagues  *data.League
+	Referees *[]data.RefereeConverted
 }
 
 func Init(cfg *config.Config, url string) {
@@ -52,7 +53,6 @@ func Init(cfg *config.Config, url string) {
 	rcjvSoccerStats.Use(healthcheck.New(healthcheck.ConfigDefault))
 	rcjvSoccerStats.Get("/healthcheck", getHealthCheck)
 
-	// Get data
 	// Get Data
 	ticker := time.NewTicker(10 * time.Second)
 	a.Leagues = data.GetLeagues(url)
@@ -74,12 +74,24 @@ func Init(cfg *config.Config, url string) {
 			//}
 		}
 	}()
+	// Referees, only fetch every few minutes
+	tickerReferees := time.NewTicker(5 * time.Minute)
+	a.Referees = data.GetReferees(url)
+	go func() {
+		for {
+			<-tickerReferees.C
+			a.Referees = data.GetReferees(url)
+			log.Println("Updated referees")
+		}
+	}()
 
 	// API Endpoints
 	apiV1 := fiber.New()
 	rcjvSoccerStats.Mount("/api/v1", apiV1)
 	apiV1.Get("/standings/:league", a.getStandings)
 	apiV1.Get("/matches/:league", a.getMatches)
+	apiV1.Get("/referees", a.getReferees)
+	apiV1.Get("/referees/:referee/matches", a.getRefereeMatches)
 
 	// Website
 	rcjvSoccerStats.Static("/", "./frontend/dist")
