@@ -14,10 +14,12 @@ defineEmits<{
 
 <template>
   <aside
-      class="w-1/3 p-4 space-y-3 border-r border-gray-700
-         h-full overflow-y-auto"
+      class="p-4 border-r border-gray-700
+           grid gap-4
+           h-full"
+      style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));"
   >
-  <RefereeCard
+    <RefereeCard
         v-for="ref in referees"
         :key="ref"
         :name="ref"
@@ -27,3 +29,4 @@ defineEmits<{
     />
   </aside>
 </template>
+

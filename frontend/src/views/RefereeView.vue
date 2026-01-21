@@ -98,6 +98,7 @@ onUnmounted(() => {
 <template>
   <div class="flex h-screen bg-gray-900 text-white">
     <RefereeList
+        class="w-2/6 h-full"
         :referees="referees"
         :selected-referee="selectedReferee"
         :upcoming-referees="upcomingReferees"
