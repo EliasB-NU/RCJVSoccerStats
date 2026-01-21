@@ -1,16 +1,20 @@
-name: dockerimage.yaml
+name: dockerimage
 on:
   release:
     types: [published]
+  workflow_dispatch:
+
+permissions:
+  packages: write
 
 jobs:
-  build-and-push:
+  build-and-push-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Login to container registry
+      - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: https://ghcr.io
@@ -26,7 +30,6 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           context: .
-          file: Dockerfile
           push: true
           tags: |
             ghcr.io/eliasb-nu/rcjvsoccerstats:${{ github.sha }}
