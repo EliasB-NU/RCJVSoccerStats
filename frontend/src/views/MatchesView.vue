@@ -6,13 +6,26 @@ import LoadingBar from '@/components/common/LoadingBar.vue'
 import type {Stage, Stages} from '@/types/matches.ts'
 import StageMatches from "@/components/matches/StageMatches.vue";
 
-/* ---------------- Constants ---------------- */
-
-const DISPLAY_TIME = 20000 // 20 seconds
 
 /* ---------------- Routing ---------------- */
 
 const route = useRoute()
+
+let DISPLAY_TIME = 20000
+
+function setDisplayTimeFromRoute() {
+  try {
+    const param = route.query.time
+    if (param) {
+      const time = parseInt(param as string, 10)
+      if (!isNaN(time) && time > 0) {
+        DISPLAY_TIME = time * 1000
+      }
+    }
+  } catch (error) {
+    console.error('Failed to parse displayTime from route:', error)
+  }
+}
 
 const leagueAbbrevs = computed(() => {
   const param = route.query.leagues
@@ -107,6 +120,7 @@ const nextStage = () => {
 /* ---------------- Lifecycle ---------------- */
 
 onMounted(async () => {
+  setDisplayTimeFromRoute()
   await loadAllStages()
   setInterval(loadAllStages, 20 * 1000) // Refresh every 60 seconds
 

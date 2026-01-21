@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import {ref, onMounted, onUnmounted } from 'vue'
 import type { LeagueResponse, StandingsMessage } from '@/types/standings'
 import LeagueStandings from '@/components/standings/LeagueStandings.vue'
 import LoadingBar from '@/components/common/LoadingBar.vue'
 import axios from 'axios'
+import {useRoute} from "vue-router";
 
 const api = axios.create({
   baseURL: '/api/v1',
@@ -16,7 +17,26 @@ const progress = ref(0)
 
 let interval: number
 
-const DISPLAY_TIME = 20000 // 20 seconds
+/* ---------------- Routing ---------------- */
+
+const route = useRoute()
+
+let DISPLAY_TIME = 20000
+
+function setDisplayTimeFromRoute() {
+  try {
+    const param = route.query.time
+    if (param) {
+      const time = parseInt(param as string, 10)
+      if (!isNaN(time) && time > 0) {
+        DISPLAY_TIME = time * 1000
+      }
+    }
+  } catch (error) {
+    console.error('Failed to parse displayTime from route:', error)
+  }
+}
+
 
 const fetchLeagues = async (): Promise<LeagueResponse[]> => {
   const { data } = await api.get<LeagueResponse[]>('/leagues')
@@ -24,6 +44,7 @@ const fetchLeagues = async (): Promise<LeagueResponse[]> => {
 }
 
 const fetchStandings = async (leagueAbbrev: string): Promise<StandingsMessage> => {
+  console.log('leagueAbbrev:', leagueAbbrev)
   let { data } = await api.get<StandingsMessage>(
       `/standings/${leagueAbbrev}`
   )
@@ -35,7 +56,9 @@ const fetchStandings = async (leagueAbbrev: string): Promise<StandingsMessage> =
 
 const loadLeague = async () => {
   const league = leagues.value[currentLeagueIndex.value]
-  standings.value = await fetchStandings(league?.abbreviation ?? '')
+  if (league?.abbreviation != undefined) {
+    standings.value = await fetchStandings(league?.abbreviation ?? '')
+  }
 }
 
 let startTime = 0
@@ -69,6 +92,7 @@ const nextLeague = async () => {
 
 
 onMounted(async () => {
+  setDisplayTimeFromRoute()
   leagues.value = await fetchLeagues()
   await loadLeague()
   startProgress()

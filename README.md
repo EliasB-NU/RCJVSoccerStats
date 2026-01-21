@@ -15,6 +15,9 @@ Sites/
 The matches site have a league argument, where you can specify the 
 leagues with the league abbreviation (e.g. `et,lwl,open`).
 
+For the standings and matches site you can also specify the cycle time.
+The parameter is called `time` and is specified in seconds (default: 20).
+
 Matches and Standings sites cycle through the different leagues and stages
 every 20 seconds, that's also the interval new data gets fetched from the backend, which fetches the data from Catigoal every 10 seconds.
 
