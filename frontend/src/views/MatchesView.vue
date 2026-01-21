@@ -49,7 +49,7 @@ async function fetchLeague(league: string): Promise<Stages | null>{
   }
   for (const stage of stages) {
     stage.matches.filter(
-        (m) => m.start !== null,
+        m => m.start !== null || m.team1 !== null && m.team2 !== null,
     ).sort((a, b) => {
       return new Date(a.start!).getTime() - new Date(b.start!).getTime()
     }
@@ -108,6 +108,7 @@ const nextStage = () => {
 
 onMounted(async () => {
   await loadAllStages()
+  setInterval(loadAllStages, 20 * 1000) // Refresh every 60 seconds
 
   if (!allStages.value.length) return
 

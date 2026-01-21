@@ -23,9 +23,7 @@ const fetchLeagues = async (): Promise<LeagueResponse[]> => {
   return data
 }
 
-const fetchStandings = async (
-    leagueAbbrev: string
-): Promise<StandingsMessage> => {
+const fetchStandings = async (leagueAbbrev: string): Promise<StandingsMessage> => {
   let { data } = await api.get<StandingsMessage>(
       `/standings/${leagueAbbrev}`
   )
@@ -74,6 +72,9 @@ onMounted(async () => {
   leagues.value = await fetchLeagues()
   await loadLeague()
   startProgress()
+
+  setInterval(fetchLeagues, 5 * 60 * 1000) // Refresh every 5 minutes
+  setInterval(fetchStandings, 20 * 1000) // Refresh every 20 seconds
 
   interval = window.setInterval(nextLeague, DISPLAY_TIME)
 })

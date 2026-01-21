@@ -8,10 +8,40 @@ defineProps<{
 /* ---------------- Helpers ---------------- */
 
 const formatTime = (iso?: string) =>
-    iso ? new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'
+    iso ? new Date(iso).toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'
 
-const isFinished = (start?: string) =>
-    start ? new Date(start).getTime() < Date.now() : false
+const parseDurationToMs = (duration?: string | null | undefined): number => {
+  if (!duration) return 0
+
+  // Expected format: HH:MM:SS
+  const [hours, minutes, seconds] = duration.split(':').map(Number)
+
+  if (hours === undefined || minutes === undefined || seconds === undefined) {
+    return 0
+  }
+
+  return ((hours * 60 + minutes) * 60 + seconds) * 1000
+}
+
+
+const isFinished = (start?: string, duration?: string | null | undefined) => {
+  if (!start || !duration) return false
+
+  const startTime = new Date(start).getTime()
+  const durationMs = parseDurationToMs(duration)
+
+  return Date.now() >= startTime + durationMs
+}
+
+const isLive = (start?: string, duration?: string | null | undefined) => {
+  if (!start || !duration) return false
+
+  const now = Date.now()
+  const startTime = new Date(start).getTime()
+  const endTime = startTime + parseDurationToMs(duration)
+
+  return now >= startTime && now < endTime
+}
 </script>
 
 <template>
@@ -37,7 +67,13 @@ const isFinished = (start?: string) =>
             v-for="match in matches.stage.matches"
             :key="match.number"
             class="border-b border-gray-200 text-xl"
-            :class="isFinished(match.start) ? 'bg-green-50 text-gray-500' : ''"
+            :class="[
+              isFinished(match.start, match.duration)
+               ? 'bg-green-50 text-gray-500'
+              : isLive(match.start, match.duration)
+               ? 'bg-yellow-100 font-semibold'
+              : ''
+            ]"
         >
           <td class="py-2">
             {{ formatTime(match.start) }}

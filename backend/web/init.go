@@ -56,6 +56,7 @@ func Init(cfg *config.Config, url string) {
 	// Get Data
 	ticker := time.NewTicker(10 * time.Second)
 	a.Leagues = data.GetLeagues(url)
+	a.Referees = data.GetReferees(url)
 	go func() {
 		for {
 			<-ticker.C
@@ -73,18 +74,9 @@ func Init(cfg *config.Config, url string) {
 			//		log.Println(stage.Matches)
 			//	}
 			//}
-		}
-	}()
-	// Referees, only fetch every few minutes
-	tickerReferees := time.NewTicker(5 * time.Minute)
-	a.Referees = data.GetReferees(url)
-	go func() {
-		for {
-			<-tickerReferees.C
-			a.Referees = data.GetReferees(url)
 
-			// log.Println("Updated referees data")
-			// log.Println(a.Referees)
+			a.Referees = data.GetReferees(url)
+			// log.Printf("Updated referees: %v\n", referees)
 		}
 	}()
 
