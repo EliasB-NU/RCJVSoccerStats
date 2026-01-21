@@ -10,10 +10,8 @@ import (
 
 func GetMatches(url string, leagues *League) *League {
 	for i, l := range leagues.Leagues {
-		for stageIndex, stage := range l.Stages {
-			if stage.StandingsPublished == "PUBLISHED" {
-				leagues.Leagues[i].Stages[stageIndex].Matches = getMatchesLeague(url, l.LeagueAbbreviation, stageIndex)
-			}
+		for stageIndex := range l.Stages {
+			leagues.Leagues[i].Stages[stageIndex].Matches = getMatchesLeague(url, l.LeagueAbbreviation, stageIndex)
 		}
 	}
 	return leagues

@@ -10,10 +10,10 @@ type League struct {
 		SeedingPublished     string `json:"seeding_publishing_state"`
 		SeedingLastPublished string `json:"seeding_last_published"`
 		Stages               []struct {
-			Name                   string `json:"name"`
-			StandingsPublished     string `json:"standings_publishing_state"`
-			StandingsLastPublished string `json:"standings_last_published"`
-			Matches                []Match
+			Name                   string  `json:"name"`
+			StandingsPublished     string  `json:"standings_publishing_state"`
+			StandingsLastPublished string  `json:"standings_last_published"`
+			Matches                []Match `json:"matches"`
 		} `json:"league_stages"`
 		LatestStandings StandingsResponse
 	} `json:"leagues"`

@@ -14,19 +14,9 @@ const router = createRouter({
       component: () => import('@/views/StandingsView.vue'),
     },
     {
-      path: '/2v2matches',
-      name: '2v2matches',
-      component: () => import('@/views/2v2MatchesView.vue')
-    },
-    {
-      path: '/entryMatches',
-      name: 'entryMatches',
-      component: () => import('@/views/EntryMatchesView.vue')
-    },
-    {
-      path: '/lwlEntryMatches',
-      name: 'lwlEntryMatches',
-      component: () => import('@/views/LWLEntryMatchesView.vue')
+      path: '/matches',
+      name: 'matches',
+      component: () => import('@/views/MatchesView.vue')
     },
     {
       path: '/referee',

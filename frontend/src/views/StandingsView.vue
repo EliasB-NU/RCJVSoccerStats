@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { LeagueResponse, StandingsMessage } from '@/types/standings'
 import LeagueStandings from '@/components/standings/LeagueStandings.vue'
-import LoadingBar from '@/components/standings/LoadingBar.vue'
+import LoadingBar from '@/components/common/LoadingBar.vue'
 import axios from 'axios'
 
 const api = axios.create({

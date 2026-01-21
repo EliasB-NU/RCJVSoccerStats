@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { StandingsMessage } from '@/types/standings'
-import StandingsTable from './StandingsTable.vue'
+import StandingsTable from '@/components/standings/StandingsTable.vue'
 
 defineProps<{
   data: StandingsMessage
@@ -16,7 +16,7 @@ defineProps<{
     <StandingsTable :standings="data.standings" />
 
     <div class="mt-4 text-xs text-gray-500 text-left font-bold">
-      Last published: {{ data.last_published }}
+      Last published: {{ new Date(data.last_published ?? '').toLocaleString() }}
     </div>
   </div>
 </template>
