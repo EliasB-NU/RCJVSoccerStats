@@ -1,5 +1,10 @@
 package config
 
+import (
+	"log"
+	"os"
+)
+
 type Config struct {
 	URL                    string
 	TournamentAbbreviation string
@@ -8,10 +13,18 @@ type Config struct {
 }
 
 func GetConfig() *Config {
-	return &Config{
-		URL:                    "https://catigoal.com/rest/v1/",
-		TournamentAbbreviation: "test2",
-		Host:                   "0.0.0.0",
-		Port:                   3030,
+	var cfg Config
+	cfg.Port = 3030
+	cfg.Host = "0.0.0.0"
+	cfg.URL = "https://catigoal.com/rest/v1/"
+	// If command line arguments are present, use these, else use environment variables
+	if len(os.Args) >= 2 {
+		cfg.TournamentAbbreviation = os.Args[1]
+	} else if len(os.Getenv("TOURNAMENT_ABBREVIATION")) > 0 {
+		cfg.TournamentAbbreviation = os.Getenv("TOURNAMENT_ABBREVIATION")
+	} else {
+		log.Fatalf("\n	TOURNAMENT_ABBREVIATION not set!\n	Please set it either via an environment variable or via command line argument.")
 	}
+
+	return &cfg
 }
