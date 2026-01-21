@@ -1,0 +1,35 @@
+name: dockerimage.yaml
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm64
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ghcr.io/eliasb-nu/rcjvsoccerstats:${{ github.sha }}
+            ghcr.io/eliasb-nu/rcjvsoccerstats:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
