@@ -1,4 +1,3 @@
-LABEL maintainer="Elias Braun"
 # Build the Go application
 FROM golang:1.25-alpine AS builder-go
 
