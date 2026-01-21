@@ -31,7 +31,7 @@ WORKDIR /app
 
 COPY --from=builder-go /app/main .
 
-COPY --from=builder-node /app/dist ./web/dist
+COPY --from=builder-node /app/dist ./frontend/dist
 
 EXPOSE 3030
 

@@ -28,7 +28,7 @@ npm install
 npm run build
 
 # Now start the backend
-go run ./backend/main.go (LeagueAbbreviation)
+go run ./backend/main.go (TOURNAMENT_ABBREVIATION)
 
 # You can now access all the sites, e.g. http://localhost:3030/#/standings
 # If you change something in the frontend code, you need to rebuild it
@@ -41,5 +41,5 @@ If you have any questions, feel free to open an issue or contact me directly.
 ## Deployment
 You can either run it directly or use the docker setup provided below.
 ```bash
-docker run -d -p 3030:3030 ghcr.io/eliasb-nu/rcjvsoccerstats:latest --env LEAGUE_ABBREVIATION=(LeagueAbbreviation)
+docker run -d -p 3030:3030 ghcr.io/eliasb-nu/rcjvsoccerstats:latest --env TOURNAMENT_ABBREVIATION=(LeagueAbbreviation)
 ```
