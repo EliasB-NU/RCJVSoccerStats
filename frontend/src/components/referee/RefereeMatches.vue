@@ -48,4 +48,3 @@ const isLive = (start: string) => {
     </div>
   </div>
 </template>
-

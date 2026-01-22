@@ -105,7 +105,7 @@ onUnmounted(() => {
         @select="selectReferee"
     />
 
-    <main class="flex-1 h-full overflow-y-auto p-6">
+    <main class="flex-1 h-full overflow-y-auto p-6 fade-bottom">
       <div class="flex justify-center">
         <RefereeMatches v-if="showMatches" :matches="matches" />
         <LiveClock v-else/>
@@ -113,3 +113,18 @@ onUnmounted(() => {
     </main>
   </div>
 </template>
+
+<style scoped>
+.fade-bottom {
+  -webkit-mask-image: linear-gradient(
+      to bottom,
+      black 85%,
+      transparent 100%
+  );
+  mask-image: linear-gradient(
+      to bottom,
+      black 85%,
+      transparent 100%
+  );
+}
+</style>
