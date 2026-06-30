@@ -1,5 +1,5 @@
 # Build the Go application
-FROM golang:1.25-alpine AS builder-go
+FROM golang:1.26.4-alpine AS builder-go
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY backend/ ./backend/
 RUN go build ./backend/main.go
 
 # Build the Node.js application
-FROM node:24.13.0-alpine AS builder-node
+FROM node:26.4-alpine AS builder-node
 
 WORKDIR /app
 
