@@ -2,7 +2,7 @@ module RCJV-SoccerStats
 
 go 1.26.4
 
-require github.com/gofiber/fiber/v2 v2.52.13
+require github.com/gofiber/fiber/v2 v2.52.14
 
 require (
 	github.com/andybalholm/brotli v1.2.2 // indirect
