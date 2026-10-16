@@ -3,6 +3,9 @@ package web
 import "github.com/gofiber/fiber/v2"
 
 func (a *API) getLeagues(c *fiber.Ctx) error {
+	a.leaguesMu.RLock()
+	defer a.leaguesMu.RUnlock()
+
 	type Response struct {
 		LeagueName string `json:"league_name"`
 		Abbrev     string `json:"abbreviation"`

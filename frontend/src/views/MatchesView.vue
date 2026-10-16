@@ -50,7 +50,7 @@ const progress = ref(0)
 async function fetchLeague(league: string): Promise<Stages | null>{
   let stages: Stages = []
   try {
-    await axios.get(`/api/v1/matches/${league}`)
+    await axios.get(`/api/v1/matches/${league}`, { timeout: 10000 })
         .then(res => {
           stages = res.data.filter(
               (s: Stage) => s.matches !== null,
@@ -77,6 +77,7 @@ const loadAllStages = async () => {
   for (const league of leagueAbbrevs.value) {
     if (league === null) continue
     const stages = await fetchLeague(league)
+    if (stages === null) return
     if (stages) {
       for (const stage of stages) {
         stagesList.push({ league, stage })
@@ -84,7 +85,12 @@ const loadAllStages = async () => {
     }
   }
 
+  if (!stagesList.length) return
+
   allStages.value = stagesList
+  if (!Number.isInteger(currentIndex.value) || currentIndex.value >= stagesList.length) {
+    currentIndex.value = 0
+  }
 }
 
 /* ---------------- Progress Animation ---------------- */
@@ -92,6 +98,7 @@ const loadAllStages = async () => {
 let startTime = 0
 let animationFrameId: number
 let interval: number
+let refreshInterval: number
 
 const animateProgress = (timestamp: number) => {
   if (!startTime) startTime = timestamp
@@ -112,6 +119,8 @@ const startProgress = () => {
 }
 
 const nextStage = () => {
+  if (!allStages.value.length) return
+
   currentIndex.value =
       (currentIndex.value + 1) % allStages.value.length
   startProgress()
@@ -119,19 +128,17 @@ const nextStage = () => {
 
 /* ---------------- Lifecycle ---------------- */
 
-onMounted(async () => {
+onMounted(() => {
   setDisplayTimeFromRoute()
-  await loadAllStages()
-  setInterval(loadAllStages, 20 * 1000) // Refresh every 60 seconds
-
-  if (!allStages.value.length) return
-
   startProgress()
   interval = window.setInterval(nextStage, DISPLAY_TIME)
+  refreshInterval = window.setInterval(loadAllStages, 20 * 1000) // Refresh every 20 seconds
+  void loadAllStages()
 })
 
 onUnmounted(() => {
   clearInterval(interval)
+  clearInterval(refreshInterval)
   cancelAnimationFrame(animationFrameId)
 })
 </script>
