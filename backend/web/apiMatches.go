@@ -7,6 +7,9 @@ import (
 )
 
 func (a *API) getMatches(c *fiber.Ctx) error {
+	a.leaguesMu.RLock()
+	defer a.leaguesMu.RUnlock()
+
 	// Check if its a valid league
 	var leagueParam = c.Params("league")
 	var leagueValid = false
