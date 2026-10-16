@@ -1,6 +1,6 @@
 module RCJV-SoccerStats
 
-go 1.26.4
+go 1.27.1
 
 require github.com/gofiber/fiber/v3 v3.6.1
 
