@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,8 +15,9 @@ import (
 )
 
 type API struct {
-	Leagues  *data.League
-	Referees *[]data.RefereeConverted
+	leaguesMu sync.RWMutex
+	Leagues   *data.League
+	Referees  *[]data.RefereeConverted
 }
 
 func Init(cfg *config.Config, url string) {
@@ -56,13 +58,22 @@ func Init(cfg *config.Config, url string) {
 	// Get Data
 	ticker := time.NewTicker(10 * time.Second)
 	a.Leagues = data.GetLeagues(url)
+	if a.Leagues == nil {
+		a.Leagues = &data.League{}
+	}
 	a.Referees = data.GetReferees(url)
 	go func() {
 		for {
 			<-ticker.C
-			a.Leagues = data.GetLeagues(url)
-			a.Leagues = data.GetStandings(url, a.Leagues)
-			a.Leagues = data.GetMatches(url, a.Leagues)
+			leagues := data.GetLeagues(url)
+			if leagues != nil {
+				leagues = data.GetStandings(url, leagues)
+				leagues = data.GetMatches(url, leagues)
+
+				a.leaguesMu.Lock()
+				a.Leagues = leagues
+				a.leaguesMu.Unlock()
+			}
 
 			//for _, l := range leagues.Leagues {
 			//	log.Printf("Updated standings for league: %s\n", l.LeagueName)
