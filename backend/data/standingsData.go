@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 func GetStandings(url string, leagues *League) *League {
@@ -28,14 +26,19 @@ func GetStandings(url string, leagues *League) *League {
 }
 
 func getStandingsLeague(url string, leagueAbbrev string, stageNumber int) StandingsResponse {
-	agent := fiber.Get(fmt.Sprintf("%sstandings?league=%s&league_stage=%d", url, leagueAbbrev, stageNumber)).InsecureSkipVerify()
-	statusCode, body, errs := agent.Bytes()
-	if len(errs) > 0 || statusCode != 200 {
-		log.Printf("Error getting standings with code %d and error: %v\n", statusCode, errs)
+	response, err := catigoalClient.Get(fmt.Sprintf("%sstandings?league=%s&league_stage=%d", url, leagueAbbrev, stageNumber))
+	if err != nil {
+		log.Printf("Error fetching Catigoal data: %v\n", err)
+		return StandingsResponse{}
+	}
+	defer response.Close()
+	statusCode, body := response.StatusCode(), response.Body()
+	if statusCode != 200 {
+		log.Printf("Error getting standings with code %d\n", statusCode)
 		return StandingsResponse{}
 	}
 	var standings StandingsResponse
-	err := json.Unmarshal(body, &standings)
+	err = json.Unmarshal(body, &standings)
 	if err != nil {
 		log.Printf("Error unmarshalling standings: %v\n", err)
 		return StandingsResponse{}
@@ -44,14 +47,19 @@ func getStandingsLeague(url string, leagueAbbrev string, stageNumber int) Standi
 }
 
 func getSeedingLeague(url string, leagueAbbrev string) StandingsResponse {
-	agent := fiber.Get(fmt.Sprintf("%sstandings?league=%s", url, leagueAbbrev)).InsecureSkipVerify()
-	statusCode, body, errs := agent.Bytes()
-	if len(errs) > 0 || statusCode != 200 {
-		log.Printf("Error getting standings with code %d and error: %v\n", statusCode, errs)
+	response, err := catigoalClient.Get(fmt.Sprintf("%sstandings?league=%s", url, leagueAbbrev))
+	if err != nil {
+		log.Printf("Error fetching Catigoal data: %v\n", err)
+		return StandingsResponse{}
+	}
+	defer response.Close()
+	statusCode, body := response.StatusCode(), response.Body()
+	if statusCode != 200 {
+		log.Printf("Error getting standings with code %d\n", statusCode)
 		return StandingsResponse{}
 	}
 	var standings StandingsResponse
-	err := json.Unmarshal(body, &standings)
+	err = json.Unmarshal(body, &standings)
 	if err != nil {
 		log.Printf("Error unmarshalling standings: %v\n", err)
 		return StandingsResponse{}

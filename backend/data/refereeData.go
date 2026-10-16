@@ -4,21 +4,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 func GetReferees(url string) *[]RefereeConverted {
 	// Get all matches
-	agent := fiber.Get(fmt.Sprintf("%smatches", url)).InsecureSkipVerify()
-	statusCode, body, errs := agent.Bytes()
-	if len(errs) > 0 || statusCode != 200 {
+	response, err := catigoalClient.Get(fmt.Sprintf("%smatches", url))
+	if err != nil {
+		log.Printf("Error fetching Catigoal data: %v\n", err)
+		return nil
+	}
+	defer response.Close()
+	statusCode, body := response.StatusCode(), response.Body()
+	if statusCode != 200 {
 		log.Printf("Error fetching refereeMatches status code %d with body %s\n", statusCode, body)
 		return nil
 	}
 	// Unmarshal matches
 	var resp MatchResponse
-	err := json.Unmarshal(body, &resp)
+	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		log.Printf("Error unmarshalling refereeMatches: %v\n", err)
 		return nil

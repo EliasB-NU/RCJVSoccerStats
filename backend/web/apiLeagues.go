@@ -1,8 +1,8 @@
 package web
 
-import "github.com/gofiber/fiber/v2"
+import "github.com/gofiber/fiber/v3"
 
-func (a *API) getLeagues(c *fiber.Ctx) error {
+func (a *API) getLeagues(c fiber.Ctx) error {
 	a.leaguesMu.RLock()
 	defer a.leaguesMu.RUnlock()
 

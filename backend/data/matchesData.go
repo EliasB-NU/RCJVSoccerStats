@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 func GetMatches(url string, leagues *League) *League {
@@ -18,14 +16,19 @@ func GetMatches(url string, leagues *League) *League {
 }
 
 func getMatchesLeague(url string, leagueAbbrev string, stageIndex int) []Match {
-	agent := fiber.Get(fmt.Sprintf("%smatches?league=%s&league_stage=%d", url, leagueAbbrev, stageIndex)).InsecureSkipVerify()
-	statusCode, body, errs := agent.Bytes()
-	if len(errs) > 0 || statusCode != 200 {
-		log.Printf("Error getting matches with code %d and error: %v\n", statusCode, errs)
+	response, err := catigoalClient.Get(fmt.Sprintf("%smatches?league=%s&league_stage=%d", url, leagueAbbrev, stageIndex))
+	if err != nil {
+		log.Printf("Error fetching Catigoal data: %v\n", err)
+		return nil
+	}
+	defer response.Close()
+	statusCode, body := response.StatusCode(), response.Body()
+	if statusCode != 200 {
+		log.Printf("Error getting matches with code %d\n", statusCode)
 		return nil
 	}
 	var resp MatchResponse
-	err := json.Unmarshal(body, &resp)
+	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		log.Printf("Error unmarshalling matches: %v\n", err)
 		return nil

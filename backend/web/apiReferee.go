@@ -4,10 +4,10 @@ import (
 	"RCJV-SoccerStats/backend/data"
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
-func (a *API) getReferees(c *fiber.Ctx) error {
+func (a *API) getReferees(c fiber.Ctx) error {
 	var msg []string
 	for _, r := range *a.Referees {
 		msg = append(msg, r.Name)
@@ -15,7 +15,7 @@ func (a *API) getReferees(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(msg)
 }
 
-func (a *API) getRefereeMatches(c *fiber.Ctx) error {
+func (a *API) getRefereeMatches(c fiber.Ctx) error {
 	// Check if its a valid referee
 	var refereeParam = c.Params("referee")
 	if refereeParam == "" {

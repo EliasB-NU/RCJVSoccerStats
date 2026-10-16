@@ -3,10 +3,10 @@ package web
 import (
 	"log"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
-func (a *API) getMatches(c *fiber.Ctx) error {
+func (a *API) getMatches(c fiber.Ctx) error {
 	a.leaguesMu.RLock()
 	defer a.leaguesMu.RUnlock()
 
